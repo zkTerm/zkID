@@ -1,6 +1,6 @@
 {
   "name": "@zkterm/zkid",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Privacy-preserving cryptographic identity system with Ed25519 proofs, AES-256-GCM encryption, and Solana blockchain verification",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

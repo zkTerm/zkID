@@ -4,6 +4,7 @@
   "description": "Privacy-preserving cryptographic identity system with Ed25519 proofs, AES-256-GCM encryption, and Solana blockchain verification",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "homepage": "https://zkterm.io",
   "scripts": {
     "build": "tsc",
     "prepublishOnly": "npm run build",
@@ -27,12 +28,12 @@
     "url": "https://github.com/zkterm/zkid"
   },
   "dependencies": {
-    "tweetnacl": "^1.0.3",
-    "@solana/web3.js": "^1.95.8"
+    "@solana/web3.js": "^1.95.8",
+    "tweetnacl": "^1.0.3"
   },
   "devDependencies": {
-    "typescript": "^5.0.0",
-    "@types/node": "^20.0.0"
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
   },
   "files": [
     "dist",

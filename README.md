@@ -216,119 +216,6 @@ npm start
 4. **Memory Safety**: Private keys zeroed after use
 5. **No Server Exposure**: Encrypted keys stored, never plaintext private keys
 
-## NPM Publishing Guide
-
-### Prerequisites
-
-1. Create NPM account at [npmjs.com](https://www.npmjs.com/signup)
-2. Verify your email address
-3. Enable 2FA (optional but recommended)
-
-### Publishing Steps
-
-#### 1. Login to NPM
-
-```bash
-npm login
-```
-
-Enter your credentials:
-- Username
-- Password
-- Email
-- 2FA code (if enabled)
-
-#### 2. Build the Package
-
-```bash
-cd zkid-package
-npm install
-npm run build
-```
-
-This compiles TypeScript to JavaScript in `dist/` folder.
-
-#### 3. Test Locally
-
-```bash
-# In zkid-package/
-npm pack
-
-# This creates @zkterm-zkid-1.0.0.tgz
-# Test it in an example:
-cd examples/1-basic-zkid
-npm install ../../@zkterm-zkid-1.0.0.tgz
-npm start
-```
-
-#### 4. Publish to NPM
-
-```bash
-# First time (public package)
-npm publish --access public
-
-# Updates
-npm version patch  # 1.0.0 -> 1.0.1
-npm publish
-
-# Or for minor version
-npm version minor  # 1.0.1 -> 1.1.0
-npm publish
-
-# Or for major version
-npm version major  # 1.1.0 -> 2.0.0
-npm publish
-```
-
-#### 5. Verify Publication
-
-Visit: https://www.npmjs.com/package/@zkterm/zkid
-
-Install from NPM:
-```bash
-npm install @zkterm/zkid
-```
-
-### Version Management
-
-Follow [Semantic Versioning](https://semver.org/):
-
-- **Patch** (1.0.X): Bug fixes, no API changes
-- **Minor** (1.X.0): New features, backward compatible
-- **Major** (X.0.0): Breaking changes
-
-```bash
-npm version patch   # Bug fixes
-npm version minor   # New features
-npm version major   # Breaking changes
-npm publish
-```
-
-### Scoped Packages
-
-This package uses `@zkterm` scope. To publish scoped packages:
-
-1. Make sure you own the `@zkterm` organization on NPM
-2. Or create your own scope: `@yourname/zkid`
-3. Use `--access public` on first publish
-
-### Troubleshooting
-
-**Error: Package already exists**
-- Change version in `package.json`
-- Or run `npm version patch` first
-
-**Error: You must sign in**
-- Run `npm login` again
-- Check credentials with `npm whoami`
-
-**Error: Forbidden**
-- Check you own the `@zkterm` scope
-- Or change to your own scope
-
-**Error: No access**
-- Use `npm publish --access public` for scoped packages
-
 ## Development
 
 ```bash
@@ -345,7 +232,7 @@ MIT
 
 ## Author
 
-zkTerm - One Terminal for the Entire Zero-Knowledge Universe
+zkTerm
 
 ## Links
 

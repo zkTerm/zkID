@@ -1,0 +1,11 @@
+/node_modules
+/examples/1-basic-zkid/node_modules
+/examples/2-sign-verify/node_modules
+/examples/3-encryption/node_modules
+/examples/4-full-flow/node_modules
+/examples/5-blockchain/node_modules
+
+QUICK_START.md
+TEST_INSTRUCTIONS.md
+
+package-lock.json

@@ -1,0 +1,10 @@
+import { ZkIdKeypair, EncryptedKeyData } from "./types";
+export declare function uint8ArrayToBase64(bytes: Uint8Array): string;
+export declare function base64ToUint8Array(base64: string): Uint8Array;
+export declare function hexToUint8Array(hex: string): Uint8Array;
+export declare function uint8ArrayToHex(bytes: Uint8Array): string;
+export declare function generateIdentityKeypair(): ZkIdKeypair;
+export declare function encryptPrivateKey(privateKey: Uint8Array, password: string): Promise<EncryptedKeyData>;
+export declare function decryptPrivateKey(encryptedBase64: string, password: string, saltHex: string, ivHex: string, iterations?: number): Promise<Uint8Array>;
+export declare function signMessage(message: string, secretKey: Uint8Array): string;
+export declare function verifySignature(message: string, signatureBase64: string, publicKeyBase64: string): boolean;

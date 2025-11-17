@@ -1,0 +1,13 @@
+{
+  "name": "zkid-example-full-flow",
+  "version": "1.0.0",
+  "description": "Example 4: Complete zkID workflow",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@zkterm/zkid": "file:../.."
+  }
+}

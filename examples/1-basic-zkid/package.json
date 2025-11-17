@@ -1,0 +1,13 @@
+{
+  "name": "zkid-example-basic",
+  "version": "1.0.0",
+  "description": "Example 1: Basic zkID generation",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@zkterm/zkid": "file:../.."
+  }
+}

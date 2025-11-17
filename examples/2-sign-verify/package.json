@@ -1,0 +1,13 @@
+{
+  "name": "zkid-example-sign-verify",
+  "version": "1.0.0",
+  "description": "Example 2: Sign and verify messages",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@zkterm/zkid": "file:../.."
+  }
+}

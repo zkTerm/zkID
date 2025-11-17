@@ -1,0 +1,13 @@
+{
+  "name": "zkid-example-blockchain",
+  "version": "1.0.0",
+  "description": "Example 5: Solana blockchain verification",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@zkterm/zkid": "file:../.."
+  }
+}

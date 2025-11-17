@@ -1,0 +1,42 @@
+{
+  "name": "@zkterm/zkid",
+  "version": "1.0.0",
+  "description": "Privacy-preserving cryptographic identity system with Ed25519 proofs, AES-256-GCM encryption, and Solana blockchain verification",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build",
+    "test": "echo \"Run examples in examples/ folder\" && exit 0"
+  },
+  "keywords": [
+    "zkid",
+    "zero-knowledge",
+    "identity",
+    "ed25519",
+    "cryptography",
+    "solana",
+    "blockchain",
+    "privacy",
+    "proof-of-ownership"
+  ],
+  "author": "zkTerm",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zkterm/zkid"
+  },
+  "dependencies": {
+    "tweetnacl": "^1.0.3",
+    "@solana/web3.js": "^1.95.8"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "@types/node": "^20.0.0"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ]
+}

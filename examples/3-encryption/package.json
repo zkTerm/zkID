@@ -1,0 +1,13 @@
+{
+  "name": "zkid-example-encryption",
+  "version": "1.0.0",
+  "description": "Example 3: Password encryption and decryption",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@zkterm/zkid": "file:../.."
+  }
+}

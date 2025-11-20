@@ -1,6 +1,6 @@
 {
   "name": "@zkterm/zkid",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Privacy-preserving cryptographic identity system with Ed25519 proofs, AES-256-GCM encryption, and multi-chain blockchain verification (Solana + Starknet). Includes Cairo smart contract for on-chain proof storage.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

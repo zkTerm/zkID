@@ -30,7 +30,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/zkterm/zkid"
+    "url": "git+https://github.com/zkterm/zkid.git"
   },
   "dependencies": {
     "tweetnacl": "^1.0.3",

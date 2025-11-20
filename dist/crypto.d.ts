@@ -1,4 +1,4 @@
-import { ZkIdKeypair, EncryptedKeyData } from "./types";
+import { ZkIdKeypair, EncryptedKeyData } from './types';
 export declare function uint8ArrayToBase64(bytes: Uint8Array): string;
 export declare function base64ToUint8Array(base64: string): Uint8Array;
 export declare function hexToUint8Array(hex: string): Uint8Array;

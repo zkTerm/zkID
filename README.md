@@ -1,14 +1,16 @@
 # @zkterm/zkid
 
-Privacy-preserving cryptographic identity system with Ed25519 proofs, AES-256-GCM encryption, and Solana blockchain verification.
+Privacy-preserving cryptographic identity system with Ed25519 proofs, AES-256-GCM encryption, and multi-chain blockchain verification (Solana + Starknet).
 
 ## Features
 
 - **zkID Generation**: Universal `did:zk:xxx` identity format
-- **Ed25519 Keypairs**: Cryptographic proof of ownership
+- **Ed25519 Keypairs**: Cryptographic proof of ownership for zkID
+- **STARK Curve Keypairs**: Starknet wallet generation (OpenZeppelin/ArgentX)
 - **Password Encryption**: AES-256-GCM with PBKDF2 (200,000 iterations)
 - **Message Signing**: Client-side signature generation
-- **Blockchain Verification**: Optional Solana on-chain proof submission
+- **Multi-Chain Blockchain Verification**: Optional Solana & Starknet on-chain proof submission
+- **Starknet Wallet Management**: Create, import, and manage Starknet wallets
 - **Browser & Node.js**: Works in both environments
 
 ## Installation
@@ -16,6 +18,44 @@ Privacy-preserving cryptographic identity system with Ed25519 proofs, AES-256-GC
 ```bash
 npm install @zkterm/zkid
 ```
+
+## Included Starknet Smart Contract
+
+This package includes a **Cairo smart contract** for on-chain zkID proof verification on Starknet.
+
+### What's Included
+
+The `contracts/` directory contains:
+- **`src/lib.cairo`** - ZkIDProofRegistry smart contract source code
+- **`Scarb.toml`** - Cairo project configuration
+- **`README.md`** - Complete deployment guide with Scarb and Starkli instructions
+
+### Contract: ZkIDProofRegistry
+
+The contract provides immutable on-chain proof storage with the following functions:
+
+- `store_proof(proof_id, proof_hash, zk_id)` - Store zkID proof hash on-chain
+- `get_proof(proof_id)` - Retrieve proof data (hash, zkID, timestamp, owner)
+- `verify_proof_exists(proof_id)` - Check if proof exists
+
+### Quick Deploy
+
+```bash
+# Install Scarb (Cairo package manager)
+curl --proto '=https' --tlsv1.2 -sSf https://docs.swmansion.com/scarb/install.sh | sh
+
+# Compile contract
+cd node_modules/@zkterm/zkid/contracts
+scarb build
+
+# Deploy to Starknet (see contracts/README.md for full instructions)
+```
+
+**Full deployment guide:** See `contracts/README.md` for detailed instructions including:
+- Starknet wallet setup with Starkli
+- Testnet/Mainnet deployment
+- Contract interaction examples
+- Integration with your backend
 
 ## Quick Start
 
@@ -46,6 +86,33 @@ const isValid = verifySignature(
 );
 
 console.log('Proof valid?', isValid); // true
+```
+
+### Starknet Wallet Example
+
+```javascript
+import { createStarknetWallet, importStarknetWallet } from '@zkterm/zkid';
+
+// Option 1: Create new wallet (generates keypair automatically)
+const password = 'MySecurePassword123!';
+const wallet = await createStarknetWallet(password, 'openzeppelin'); // or 'argentx'
+
+console.log('Starknet Address:', wallet.address);
+console.log('Public Key:', wallet.publicKey);
+console.log('Encrypted:', wallet.encryptedPrivateKey.encrypted);
+
+// Option 2: Import existing private key (e.g., from external source)
+// Use this when you already have a Starknet private key
+const existingPrivateKey = '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef';
+const importedWallet = await importStarknetWallet(
+  existingPrivateKey,
+  password,
+  'openzeppelin'
+);
+
+console.log('Imported Address:', importedWallet.address);
+
+// Deploy the included Cairo contract (see contracts/README.md)
 ```
 
 ## API Documentation
@@ -137,9 +204,11 @@ Complete proof generation workflow:
 
 ### Blockchain (Optional)
 
-#### `submitProofToSolana(zkId, proofHash, rpcUrl, payerKeypair): Promise<BlockchainProofResult>`
+#### Solana Blockchain Verification
 
-Submits proof to Solana Memo Program.
+##### `submitProofToSolana(zkId, proofHash, rpcUrl, payerKeypair): Promise<BlockchainProofResult>`
+
+Submits zkID proof to Solana Memo Program.
 
 **Parameters:**
 - `zkId`: Your zkID
@@ -156,9 +225,145 @@ Submits proof to Solana Memo Program.
 }
 ```
 
-#### `verifyProofOnChain(txHash: string, rpcUrl: string): Promise<boolean>`
+##### `verifyProofOnChain(txHash: string, rpcUrl: string): Promise<boolean>`
 
 Verifies transaction exists on Solana blockchain.
+
+### Starknet Wallet Management
+
+Complete Starknet wallet creation and management with STARK curve cryptography.
+
+#### `generateStarknetKeypair(): StarknetKeypair`
+
+Generates a new STARK curve keypair for Starknet wallets.
+
+**Returns:**
+```typescript
+{
+  privateKey: string;  // Hex format with 0x prefix
+  publicKey: string;   // Stark public key
+}
+```
+
+**Example:**
+```javascript
+import { generateStarknetKeypair } from '@zkterm/zkid';
+
+const keypair = generateStarknetKeypair();
+console.log('Private Key:', keypair.privateKey);
+console.log('Public Key:', keypair.publicKey);
+```
+
+#### `calculateStarknetAddress(publicKey: string, accountType?: 'openzeppelin' | 'argentx'): string`
+
+Calculates Starknet account address from public key.
+
+**Parameters:**
+- `publicKey`: Stark public key
+- `accountType`: Account implementation type (default: `'openzeppelin'`)
+  - `'openzeppelin'`: OpenZeppelin account contract
+  - `'argentx'`: ArgentX account contract
+
+**Returns:** Starknet account address (hex string)
+
+**Example:**
+```javascript
+import { calculateStarknetAddress } from '@zkterm/zkid';
+
+const address = calculateStarknetAddress(publicKey, 'openzeppelin');
+console.log('Starknet Address:', address);
+```
+
+#### `createStarknetWallet(password: string, accountType?: 'openzeppelin' | 'argentx'): Promise<StarknetWallet>`
+
+Creates a new Starknet wallet with encrypted private key.
+
+**Parameters:**
+- `password`: Password for encrypting private key
+- `accountType`: Account type (default: `'openzeppelin'`)
+
+**Returns:**
+```typescript
+{
+  address: string;              // Starknet account address
+  publicKey: string;            // Stark public key
+  encryptedPrivateKey: {
+    encrypted: string;          // Base64 encrypted private key
+    salt: string;               // Hex salt for PBKDF2
+    iv: string;                 // Hex IV for AES-GCM
+    iterations: number;         // 200,000
+  };
+  accountType: 'openzeppelin' | 'argentx';
+}
+```
+
+**Example:**
+```javascript
+import { createStarknetWallet } from '@zkterm/zkid';
+
+const wallet = await createStarknetWallet('MySecurePassword123!', 'openzeppelin');
+console.log('Wallet Address:', wallet.address);
+console.log('Public Key:', wallet.publicKey);
+console.log('Account Type:', wallet.accountType);
+```
+
+#### `importStarknetWallet(privateKey: string, password: string, accountType?: 'openzeppelin' | 'argentx'): Promise<StarknetWallet>`
+
+Imports existing Starknet wallet from private key.
+
+**Parameters:**
+- `privateKey`: Starknet private key (hex, with or without 0x prefix)
+- `password`: Password for encrypting private key
+- `accountType`: Account type (default: `'openzeppelin'`)
+
+**Returns:** `StarknetWallet` object (same as `createStarknetWallet`)
+
+**Example:**
+```javascript
+import { importStarknetWallet } from '@zkterm/zkid';
+
+const privateKey = '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef';
+const wallet = await importStarknetWallet(privateKey, 'MyPassword123!', 'argentx');
+console.log('Imported Wallet:', wallet.address);
+```
+
+#### `decryptStarknetPrivateKey(encryptedData: EncryptedKeyData, password: string): Promise<string>`
+
+Decrypts Starknet wallet private key.
+
+**Parameters:**
+- `encryptedData`: Encrypted private key data (from wallet creation/import)
+- `password`: Password used during encryption
+
+**Returns:** Decrypted private key (hex string with 0x prefix)
+
+**Example:**
+```javascript
+import { decryptStarknetPrivateKey } from '@zkterm/zkid';
+
+const privateKey = await decryptStarknetPrivateKey(
+  wallet.encryptedPrivateKey,
+  'MyPassword123!'
+);
+console.log('Decrypted Private Key:', privateKey);
+```
+
+#### `getStarknetPublicKey(privateKey: string): string`
+
+Derives Stark public key from private key.
+
+**Parameters:**
+- `privateKey`: Starknet private key (hex, with or without 0x prefix)
+
+**Returns:** Stark public key (hex string)
+
+**Example:**
+```javascript
+import { getStarknetPublicKey } from '@zkterm/zkid';
+
+const publicKey = getStarknetPublicKey('0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef');
+console.log('Public Key:', publicKey);
+```
 
 ### Utilities
 
@@ -171,37 +376,118 @@ hexToUint8Array(hex: string): Uint8Array
 
 ## Examples
 
+### Complete zkID Workflow (Ed25519)
+
+```javascript
+import { 
+  createZkIdIdentity, 
+  generateProof, 
+  verifySignature 
+} from '@zkterm/zkid';
+
+// 1. Create zkID identity
+const password = 'MySecurePassword123!';
+const identity = await createZkIdIdentity(password);
+
+console.log('zkID:', identity.zkId);
+console.log('Public Key:', identity.publicKey);
+
+// 2. Generate cryptographic proof
+const proof = await generateProof(
+  identity.zkId,
+  password,
+  identity.encryptedPrivateKey.encrypted,
+  identity.encryptedPrivateKey.salt,
+  identity.encryptedPrivateKey.iv
+);
+
+console.log('Proof Signature:', proof.signature);
+console.log('Proof Message:', proof.message);
+
+// 3. Verify signature
+const isValid = verifySignature(
+  proof.message,
+  proof.signature,
+  identity.publicKey
+);
+
+console.log('Proof Valid?', isValid); // true
+```
+
+### Complete Starknet Wallet Workflow
+
+```javascript
+import { 
+  createStarknetWallet,
+  importStarknetWallet,
+  decryptStarknetPrivateKey,
+  calculateStarknetAddress,
+  getStarknetPublicKey
+} from '@zkterm/zkid';
+
+// 1. Create new Starknet wallet (OpenZeppelin)
+const password = 'MyStarknetPassword123!';
+const wallet = await createStarknetWallet(password, 'openzeppelin');
+
+console.log('Wallet Address:', wallet.address);
+console.log('Public Key:', wallet.publicKey);
+console.log('Account Type:', wallet.accountType);
+
+// 2. Decrypt private key when needed
+const privateKey = await decryptStarknetPrivateKey(
+  wallet.encryptedPrivateKey,
+  password
+);
+console.log('Private Key:', privateKey);
+
+// 3. Import existing wallet (ArgentX)
+const existingKey = '0xabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcd';
+const importedWallet = await importStarknetWallet(
+  existingKey,
+  'NewPassword456!',
+  'argentx'
+);
+console.log('Imported Address:', importedWallet.address);
+
+// 4. Calculate address from public key
+const publicKey = getStarknetPublicKey(privateKey);
+const address = calculateStarknetAddress(publicKey, 'openzeppelin');
+console.log('Calculated Address:', address);
+```
+
+### Working Code Examples
+
 The `examples/` folder contains 5 working examples:
 
-### 1. Basic zkID Generation
+#### 1. Basic zkID Generation
 ```bash
 cd examples/1-basic-zkid
 npm install
 npm start
 ```
 
-### 2. Sign & Verify Messages
+#### 2. Sign & Verify Messages
 ```bash
 cd examples/2-sign-verify
 npm install
 npm start
 ```
 
-### 3. Password Encryption
+#### 3. Password Encryption
 ```bash
 cd examples/3-encryption
 npm install
 npm start
 ```
 
-### 4. Complete Workflow
+#### 4. Complete Workflow
 ```bash
 cd examples/4-full-flow
 npm install
 npm start
 ```
 
-### 5. Blockchain Verification
+#### 5. Blockchain Verification (Solana)
 ```bash
 cd examples/5-blockchain
 npm install

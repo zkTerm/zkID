@@ -13,26 +13,26 @@ exports.decryptPrivateKey = decryptPrivateKey;
 exports.signMessage = signMessage;
 exports.verifySignature = verifySignature;
 const tweetnacl_1 = __importDefault(require("tweetnacl"));
-if (typeof globalThis.crypto === "undefined" &&
-    typeof process !== "undefined") {
+if (typeof globalThis.crypto === 'undefined' && typeof process !== 'undefined') {
     try {
-        const { webcrypto } = require("node:crypto");
+        const { webcrypto } = require('node:crypto');
         globalThis.crypto = webcrypto;
     }
-    catch (e) { }
+    catch (e) {
+    }
 }
 const PBKDF2_ITERATIONS = 200000;
 const AES_KEY_LENGTH = 256;
-const PBKDF2_HASH = "SHA-256";
+const PBKDF2_HASH = 'SHA-256';
 function uint8ArrayToBase64(bytes) {
-    if (typeof Buffer !== "undefined") {
-        return Buffer.from(bytes).toString("base64");
+    if (typeof Buffer !== 'undefined') {
+        return Buffer.from(bytes).toString('base64');
     }
     return btoa(String.fromCharCode(...Array.from(bytes)));
 }
 function base64ToUint8Array(base64) {
-    if (typeof Buffer !== "undefined") {
-        return new Uint8Array(Buffer.from(base64, "base64"));
+    if (typeof Buffer !== 'undefined') {
+        return new Uint8Array(Buffer.from(base64, 'base64'));
     }
     const binaryString = atob(base64);
     const bytes = new Uint8Array(binaryString.length);
@@ -50,8 +50,8 @@ function hexToUint8Array(hex) {
 }
 function uint8ArrayToHex(bytes) {
     return Array.from(bytes)
-        .map((b) => b.toString(16).padStart(2, "0"))
-        .join("");
+        .map(b => b.toString(16).padStart(2, '0'))
+        .join('');
 }
 function generateIdentityKeypair() {
     const keypair = tweetnacl_1.default.sign.keyPair();
@@ -63,16 +63,16 @@ function generateIdentityKeypair() {
 async function deriveKey(password, salt, iterations = PBKDF2_ITERATIONS) {
     const encoder = new TextEncoder();
     const passwordBuffer = encoder.encode(password);
-    const baseKey = await crypto.subtle.importKey("raw", passwordBuffer, "PBKDF2", false, ["deriveKey"]);
+    const baseKey = await crypto.subtle.importKey('raw', passwordBuffer, 'PBKDF2', false, ['deriveKey']);
     const derivedKey = await crypto.subtle.deriveKey({
-        name: "PBKDF2",
+        name: 'PBKDF2',
         salt: salt,
         iterations,
         hash: PBKDF2_HASH,
     }, baseKey, {
-        name: "AES-GCM",
+        name: 'AES-GCM',
         length: AES_KEY_LENGTH,
-    }, false, ["encrypt", "decrypt"]);
+    }, false, ['encrypt', 'decrypt']);
     return derivedKey;
 }
 async function encryptPrivateKey(privateKey, password) {
@@ -80,7 +80,7 @@ async function encryptPrivateKey(privateKey, password) {
     const iv = crypto.getRandomValues(new Uint8Array(12));
     const key = await deriveKey(password, salt, PBKDF2_ITERATIONS);
     const encryptedBuffer = await crypto.subtle.encrypt({
-        name: "AES-GCM",
+        name: 'AES-GCM',
         iv: iv,
     }, key, privateKey);
     return {
@@ -97,13 +97,13 @@ async function decryptPrivateKey(encryptedBase64, password, saltHex, ivHex, iter
     const key = await deriveKey(password, salt, iterations);
     try {
         const decryptedBuffer = await crypto.subtle.decrypt({
-            name: "AES-GCM",
+            name: 'AES-GCM',
             iv: iv,
         }, key, encryptedData);
         return new Uint8Array(decryptedBuffer);
     }
     catch (error) {
-        throw new Error("Decryption failed: Invalid password or corrupted data");
+        throw new Error('Decryption failed: Invalid password or corrupted data');
     }
 }
 function signMessage(message, secretKey) {

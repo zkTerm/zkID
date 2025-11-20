@@ -7,12 +7,12 @@ function createProofMessage(zkId, nonce) {
     const timestamp = Date.now();
     const nonceValue = nonce || (0, crypto_1.uint8ArrayToHex)(crypto.getRandomValues(new Uint8Array(16)));
     return {
-        version: "2.0.0",
-        type: "zkid_cryptographic_ownership",
+        version: '2.0.0',
+        type: 'zkid_cryptographic_ownership',
         zkId,
         timestamp,
         nonce: nonceValue,
-        expiresAt: timestamp + 10 * 60 * 1000,
+        expiresAt: timestamp + (10 * 60 * 1000),
     };
 }
 async function generateProof(zkId, password, encryptedPrivateKey, salt, iv, iterations = 200000) {

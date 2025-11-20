@@ -23,5 +23,6 @@ __exportStar(require("./crypto"), exports);
 __exportStar(require("./identity"), exports);
 __exportStar(require("./proof"), exports);
 __exportStar(require("./blockchain"), exports);
+__exportStar(require("./starknet"), exports);
 var tweetnacl_1 = require("tweetnacl");
 Object.defineProperty(exports, "nacl", { enumerable: true, get: function () { return __importDefault(tweetnacl_1).default; } });

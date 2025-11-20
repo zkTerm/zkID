@@ -41,3 +41,15 @@ export interface BlockchainProofResult {
   verified: boolean;
   timestamp: number;
 }
+
+export interface StarknetKeypair {
+  privateKey: string;
+  publicKey: string;
+}
+
+export interface StarknetWallet {
+  address: string;
+  publicKey: string;
+  encryptedPrivateKey: EncryptedKeyData;
+  accountType: 'openzeppelin' | 'argentx';
+}

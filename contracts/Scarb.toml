@@ -1,0 +1,13 @@
+[package]
+name = "zkid_proof_registry"
+version = "1.0.0"
+edition = "2024_07"
+
+[dependencies]
+starknet = ">=2.9.0"
+
+[[target.starknet-contract]]
+sierra = true
+casm = true
+
+[tool.snforge]
